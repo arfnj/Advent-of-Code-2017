@@ -26,15 +26,17 @@
 
 // Your puzzle input is 277678.
 
-const squareFinder = target => {
-	let square = 1;
-	let i = -1;
-	while (square<target) {
-		i += 2
-		square = i*i;
-	}
-	return i;
-}
+// const squareFinder = target => {
+// 	let square = 1;
+// 	let i = -1;
+// 	while (square<target) {
+// 		i += 2
+// 		square = i*i;
+// 	}
+// 	return i;
+// }
+
+const squareFinder = target => Math.ceil(Math.sqrt(target))%2 ? Math.ceil(Math.sqrt(target)) : Math.ceil(Math.sqrt(target)) + 1;
 
 const distance = target => {
 	let square = squareFinder(target);
@@ -82,17 +84,79 @@ const distance = target => {
 // Your puzzle input is still 277678.
 
 const stressTest = target => {
-	let square = squareFinder(target);
-	let center = Math.floor(square/2);
-	let row = new Array(square);
+	const square = squareFinder(target);
+	const center = Math.floor(square/2);
 	let matrix = [];
+	let found = false;
+	let index = 1;
+	let response;
+	let origin = {row: center, col: center+1};
+
+	const adder = (row,col) => {
+		let sum = 0;
+		sum = matrix[row-1][col] ? sum+=matrix[row-1][col] : sum;
+		sum = matrix[row+1][col] ? sum+=matrix[row+1][col] : sum;
+		sum = matrix[row][col-1] ? sum+=matrix[row][col-1] : sum;
+		sum = matrix[row][col+1] ? sum+=matrix[row][col+1] : sum;
+		sum = matrix[row-1][col-1] ? sum+=matrix[row-1][col-1] : sum;
+		sum = matrix[row+1][col-1] ? sum+=matrix[row+1][col-1] : sum;
+		sum = matrix[row-1][col+1] ? sum+=matrix[row-1][col+1] : sum;
+		sum = matrix[row+1][col+1] ? sum+=matrix[row+1][col+1] : sum;
+		return sum;
+	}
+
+	const pathMaker = (index,startRow,startCol) => {
+		const steps = 2*index;
+		for (let i=0; i<steps; i++) {
+			matrix[startRow+i][startCol] = adder(startRow+i,startCol);
+			if (matrix[startRow][startCol+i] > target) {
+				found = true;
+				response = matrix[startRow][startCol+i];
+				break;
+			}
+		}
+		if (!found) {
+			for (let i=0; i<steps; i++) {
+				matrix[startRow+steps-1][startCol-1-i] = adder(startRow+steps-1,startCol-1-i);
+				if (matrix[startRow+steps-1][startCol-1-i] > target) {
+					found = true;
+					response = matrix[startRow+steps-1][startCol-1-i];
+					break;
+				}
+			}
+		}
+		if (!found) {
+			for (let i=0; i<steps; i++) {
+				matrix[startRow+steps-2-i][startCol-steps] = adder(startRow+steps-2-i,startCol-steps);
+				if (matrix[startRow+steps-2-i][startCol-steps] > target) {
+					found = true;
+					response = matrix[startRow+steps-2-i][startCol-steps];
+					break;
+				}
+			}
+		}
+		if (!found) {
+			for (let i=0; i<steps; i++) {
+				matrix[startRow-1][startCol-steps+1+i] = adder(startRow-1,startCol-steps+1+i);
+				if (matrix[startRow-1][startCol-steps+1+i] > target) {
+					found = true;
+					response = matrix[startRow-1][startCol-steps+1+i];
+				}
+ 			}
+		}
+		return [startRow-1,startCol+1];
+	}
+
 	for (let i = 0; i < square; i++) {
-		matrix.push(row);
+		matrix.push(new Array(square));
 	}
 	matrix[center][center] = 1;
-	/* 8 * square-2 elements in each perimeter
+
+	while (!found) {
+		[ origin.row, origin.col ] = pathMaker(index,origin.row,origin.col);
+		index++;
+	}
+
+	return response;
+	
 }
-
-
-
-
