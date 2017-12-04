@@ -141,6 +141,7 @@ const stressTest = target => {
 				if (matrix[startRow-1][startCol-steps+1+i] > target) {
 					found = true;
 					response = matrix[startRow-1][startCol-steps+1+i];
+					break;
 				}
  			}
 		}
