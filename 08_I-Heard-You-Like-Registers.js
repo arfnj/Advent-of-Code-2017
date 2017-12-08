@@ -25,15 +25,6 @@
 
 // What is the largest value in any register after completing the instructions in your puzzle input?
 
-const operators = {
-	'>': (left,right) => left > right,
-	'<': (left,right) => left < right,
-	'>=': (left,right) => left >= right,
-	'<=': (left,right) => left <= right,
-	'==': (left,right) => left === right,
-	'!=': (left,right) => left !== right
-};
-
 const input = `um inc -671 if lbf != 5
 j inc 236 if umr > -6
 fk inc -246 if j < 241
@@ -1035,10 +1026,14 @@ x inc -146 if is == 4943
 es inc 496 if kg < 2723
 t dec -949 if uy <= -2989`
 
-const input2 = `b inc 5 if a > 1
-a inc 1 if b < 5
-c dec -10 if a >= 1
-c inc -20 if c == 10`;
+const operators = {
+	'>': (left,right) => left > right,
+	'<': (left,right) => left < right,
+	'>=': (left,right) => left >= right,
+	'<=': (left,right) => left <= right,
+	'==': (left,right) => left === right,
+	'!=': (left,right) => left !== right
+};
 
 let instructions = input.split('\n').map(line => line.split(' ')).map(line => {
 	let arr = [];
