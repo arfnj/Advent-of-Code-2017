@@ -140,12 +140,13 @@ class Graph {
 	arrays.forEach(pair => graph.addNode(pair[0],pair[1]));
 	graph.vertices.forEach(vertex => 	graph.findLinks(0,[],matches,vertex,null));
 	console.log('Part one answer:', matches.size);
+	baddies.add(Math.min(...matches));
 	graph.vertices.forEach(vertex => {
 		if (!matches.has(vertex)) {
 			graph.findLoops(vertex,deadEnds,baddies,[]);
 		}
 	})
-	console.log('Part two answer:', baddies.size + 1);
+	console.log('Part two answer:', baddies.size);
 })();
 
 // --- Part Two ---
