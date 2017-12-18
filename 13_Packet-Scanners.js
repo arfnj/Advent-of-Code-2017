@@ -182,7 +182,7 @@
 // Given the details of the firewall you've recorded, if you leave immediately, what is the severity
 // of your whole trip?
 
-cont input = `0: 3
+const input = `0: 3
 1: 2
 2: 4
 4: 4
@@ -228,3 +228,184 @@ cont input = `0: 3
 98: 17`;
 
 
+let pairs = input.split('\n').map(pair => pair.split(': '));
+
+let firewall = [];
+
+// pairs.forEach(tuple => firewall[Number(tuple[0])] = { depth: Number(tuple[1]), position: 1, direction: 'd' });
+pairs.forEach(tuple => firewall[Number(tuple[0])] = Number(tuple[1]));
+
+// const scanner = (firewall) => {
+//   firewall.forEach(layer => {
+//     if (layer) {
+//       layer.position = layer.direction === 'd' ? layer.position + 1 : layer.position - 1;
+//       layer.direction = (layer.position === layer.depth && layer.direction === 'd') ? 'u' : layer.direction;
+//       layer.direction = (layer.position === 1 && layer.direction === 'u') ? 'd' : layer.direction;
+//     }
+//   })
+// }
+
+const traverser = (firewall) => {
+  let severity = 0;
+  let packetPosition = -1;
+  let picos = 0;
+  for (let i=0; i<firewall.length; i++) {
+    packetPosition++
+    if (firewall[packetPosition] && picos%(firewall[packetPosition] * 2 - 2) === 0) {
+      severity += (packetPosition * firewall[packetPosition]);
+    }
+    picos++;
+  }
+  console.log('Severity equals:', severity);
+  return severity;
+}
+
+traverser(firewall);
+
+// --- Part Two ---
+// Now, you need to pass through the firewall without being caught - easier said than done.
+
+// You can't control the speed of the packet, but you can delay it any number of picoseconds. For
+// each picosecond you delay the packet before beginning your trip, all security scanners move one
+// step. You're not in the firewall during this time; you don't enter layer 0 until you stop
+// delaying the packet.
+
+// In the example above, if you delay 10 picoseconds (picoseconds 0 - 9), you won't get caught:
+
+// State after delaying:
+//  0   1   2   3   4   5   6
+// [ ] [S] ... ... [ ] ... [ ]
+// [ ] [ ]         [ ]     [ ]
+// [S]             [S]     [S]
+//                 [ ]     [ ]
+
+// Picosecond 10:
+//  0   1   2   3   4   5   6
+// ( ) [S] ... ... [ ] ... [ ]
+// [ ] [ ]         [ ]     [ ]
+// [S]             [S]     [S]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// ( ) [ ] ... ... [ ] ... [ ]
+// [S] [S]         [S]     [S]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+
+// Picosecond 11:
+//  0   1   2   3   4   5   6
+// [ ] ( ) ... ... [ ] ... [ ]
+// [S] [S]         [S]     [S]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// [S] (S) ... ... [S] ... [S]
+// [ ] [ ]         [ ]     [ ]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+
+// Picosecond 12:
+//  0   1   2   3   4   5   6
+// [S] [S] (.) ... [S] ... [S]
+// [ ] [ ]         [ ]     [ ]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// [ ] [ ] (.) ... [ ] ... [ ]
+// [S] [S]         [S]     [S]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+
+// Picosecond 13:
+//  0   1   2   3   4   5   6
+// [ ] [ ] ... (.) [ ] ... [ ]
+// [S] [S]         [S]     [S]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// [ ] [S] ... (.) [ ] ... [ ]
+// [ ] [ ]         [ ]     [ ]
+// [S]             [S]     [S]
+//                 [ ]     [ ]
+
+
+// Picosecond 14:
+//  0   1   2   3   4   5   6
+// [ ] [S] ... ... ( ) ... [ ]
+// [ ] [ ]         [ ]     [ ]
+// [S]             [S]     [S]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// [ ] [ ] ... ... ( ) ... [ ]
+// [S] [S]         [ ]     [ ]
+// [ ]             [ ]     [ ]
+//                 [S]     [S]
+
+
+// Picosecond 15:
+//  0   1   2   3   4   5   6
+// [ ] [ ] ... ... [ ] (.) [ ]
+// [S] [S]         [ ]     [ ]
+// [ ]             [ ]     [ ]
+//                 [S]     [S]
+
+//  0   1   2   3   4   5   6
+// [S] [S] ... ... [ ] (.) [ ]
+// [ ] [ ]         [ ]     [ ]
+// [ ]             [S]     [S]
+//                 [ ]     [ ]
+
+
+// Picosecond 16:
+//  0   1   2   3   4   5   6
+// [S] [S] ... ... [ ] ... ( )
+// [ ] [ ]         [ ]     [ ]
+// [ ]             [S]     [S]
+//                 [ ]     [ ]
+
+//  0   1   2   3   4   5   6
+// [ ] [ ] ... ... [ ] ... ( )
+// [S] [S]         [S]     [S]
+// [ ]             [ ]     [ ]
+//                 [ ]     [ ]
+
+// Because all smaller delays would get you caught, the fewest number of picoseconds you would need
+// to delay to get through safely is 10.
+
+// What is the fewest number of picoseconds that you need to delay the packet to pass through the
+// firewall without being caught?
+
+const doOrDie = (firewall, picos) => {
+  let packetPosition = -1;
+  let time = picos;
+  for (let i=0; i<firewall.length; i++) {
+    packetPosition++
+    if (firewall[packetPosition] && time%(firewall[packetPosition] * 2 - 2) === 0) {
+      return false;
+    }
+    time++;
+  }
+  return true;
+}
+
+const tester = (firewall) => {
+  let alive = false;
+  let delay = 1;
+  while (!alive) {
+    let test = firewall.slice();
+    alive = doOrDie(test,delay);
+    delay ++;
+  }
+  console.log('Minimum delay', delay-1);
+}
+
+tester(firewall);
+
+/* scanner at position 1 every (depth*2 - 2) seconds */
