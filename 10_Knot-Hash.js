@@ -149,23 +149,23 @@ const reverser = (list,startIndex,count) => {
 // Treating your puzzle input as a string of ASCII characters, what is the Knot Hash of your puzzle
 // input? Ignore any leading or trailing whitespace you might encounter.
 
-const ASCII = {
-	'0': 48,
-	'1': 49,
-	'2': 50,
-	'3': 51,
-	'4': 52,
-	'5': 53,
-	'6': 54,
-	'7': 55,
-	'8': 56,
-	'9': 57,
-	',': 44
-};
+// const ASCII = {
+// 	'0': 48,
+// 	'1': 49,
+// 	'2': 50,
+// 	'3': 51,
+// 	'4': 52,
+// 	'5': 53,
+// 	'6': 54,
+// 	'7': 55,
+// 	'8': 56,
+// 	'9': 57,
+// 	',': 44
+// };
 
 
-const knotMaker = (ASCIIKey) => {
-	const newSeq = sequence.join(',').split('').map(char => Number(ASCIIKey[char]));
+const knotMaker = () => {
+	const newSeq = sequence.join(',').split('').map(char => char.charCodeAt());
 	newSeq.push(17,31,73,47,23);
 	let list = [];
 		for (let i=0; i<=255; i++) {
@@ -191,6 +191,6 @@ const knotMaker = (ASCIIKey) => {
 	},''));
 };
 
-knotMaker(ASCII);
+knotMaker();
 
 module.exports = { knotMaker };
