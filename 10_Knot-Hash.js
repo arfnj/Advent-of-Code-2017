@@ -192,5 +192,3 @@ const knotMaker = () => {
 };
 
 knotMaker();
-
-module.exports = { knotMaker };
