@@ -164,8 +164,8 @@ const ASCII = {
 };
 
 
-(() => {
-	const newSeq = sequence.join(',').split('').map(char => Number(ASCII[char]));
+const knotMaker = (ASCIIKey) => {
+	const newSeq = sequence.join(',').split('').map(char => Number(ASCIIKey[char]));
 	newSeq.push(17,31,73,47,23);
 	let list = [];
 		for (let i=0; i<=255; i++) {
@@ -189,5 +189,8 @@ const ASCII = {
 		let hex = num.toString(16);
 		return hex.length === 2 ? knot + hex : knot + '0' + hex;
 	},''));
-})()
+};
 
+knotMaker(ASCII);
+
+module.exports = { knotMaker };
